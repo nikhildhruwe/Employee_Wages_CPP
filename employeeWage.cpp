@@ -7,7 +7,7 @@ void writeToFile (string fileName, int empWage){
     fstream fileStream;
     fileStream.open(fileName, ios::out | ios::trunc);
     if(fileStream.is_open()){
-        fileStream << empWage << endl;
+        fileStream << "Monthly Wage : " << empWage << endl;
         fileStream.close();
     }
 }
