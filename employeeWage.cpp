@@ -5,10 +5,11 @@ using namespace std;
 int main (){
              cout << "\n\tWelcome To Employee Wage Program.\n" << endl;
     const int EMP_RATE_PER_HOUR = 20, FULL_TIME = 0, PART_TIME = 1, NUM_OF_WORKING_DAYS = 20;
+    const int MAX_MONTHLY_HRS = 100;
     int empHrs, empWage, isPresent = 1, day = 0, totalEmpHrs = 0 ;
     srand(time(0));
 
-  while ( day <= NUM_OF_WORKING_DAYS){  
+  while ( day <= NUM_OF_WORKING_DAYS && totalEmpHrs <= MAX_MONTHLY_HRS){  
     day++;
     int empCheck = rand() % 3;
     switch(empCheck){
