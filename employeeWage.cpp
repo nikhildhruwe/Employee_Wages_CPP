@@ -2,6 +2,7 @@
 #include <fstream>
 #include <ctime>
 #include <unistd.h>
+#include <list>
 using namespace std;
 
 string month[] = {"Jan", "Feb", "March", "April"};
@@ -75,24 +76,27 @@ void writeToFile (string fileName, int *employee, int empNumber, int monthCount,
     }
 }
 
-void companyDetailsBuilder(company companyObj){
+void companyDetailsBuilder(list<company> companyList){
+    list <company> :: iterator companyObj;
+    string fileName = "employeeWageDetails.csv";  
     int empHrs, empWage, totalEmpHrs, monthCount;
-    int empNumber = companyObj.empNumber;
-    string fileName = "employeeWageDetails.csv";
-    
-    string companyName = companyObj.companyName;
+   
+   for ( companyObj = companyList.begin(); companyObj!=companyList.end(); companyObj++){
+    int empNumber = (*companyObj).empNumber; 
+    string companyName = (*companyObj).companyName;
     int employee[empNumber];
      monthCount = 0;
     while (monthCount < monthSize){
         for ( int i = 0; i < empNumber ; i++){
             sleep(1.5);
-            empWage = companyObj.empWageBuilder(companyObj);
+            empWage = (*companyObj).empWageBuilder((*companyObj));
             employee[i] = empWage;
             cout << "Company :" << companyName << ", employee ID :" << i + 1 <<", Employee Wage = " << empWage << ", Month: " << month[monthCount]<< endl;
         }
         writeToFile(fileName, employee, empNumber, monthCount, companyName);
         monthCount++;
     }
+   }
 }
 
 int main (){
@@ -103,10 +107,14 @@ int main (){
     cout << "Enter Number of companies" << endl;
     cin >> numberOfCompanies;
 
-    company companyObj[numberOfCompanies];
+
+    list <company> companyList;
 
     while (companyCount < numberOfCompanies){
-        companyDetailsBuilder(companyObj[companyCount]);
+        company companyObj;
+        companyList.push_back(companyObj);
         companyCount++;
     }
+
+    companyDetailsBuilder(companyList);
 }  
