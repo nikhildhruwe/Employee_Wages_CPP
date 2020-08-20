@@ -13,6 +13,8 @@ typedef struct Company {
     int MAX_MONTHLY_HRS ;
     int EMP_RATE_PER_HOUR;
     Company();
+    int empWageBuilder(company);
+    void companyDetailsBuilder();
 } company;
 
 Company :: Company(){
@@ -24,6 +26,11 @@ Company :: Company(){
     cin >> MAX_MONTHLY_HRS;
     cout << "Enter employee rate per hour : ";
     cin >> EMP_RATE_PER_HOUR;
+}
+
+int company :: empWageBuilder(company companyObj){
+    int totalEmpHrs = getTotalEmpHours(companyObj);
+    return totalEmpHrs * companyObj.EMP_RATE_PER_HOUR;
 }
 
 void writeToFile (string fileName, int *employee, int empNumber, int monthCount, string companyName){
@@ -71,19 +78,12 @@ int getTotalEmpHours(company companyObj){
             return totalEmpHrs;
 }
 
-int main (){
-             cout << "\n\tWelcome To Employee Wage Program." << endl;
+void companyDetailsBuilder(){
     int empHrs, empWage, totalEmpHrs, empNumber, monthCount;
     string fileName = "employeeWageDetails.csv";
-    bool status = true;
     
-    while ( status){
-        int choice;
-        cout << "\n   Enter choice\n1.Add Company Details\n2.Exit" << endl;
-        cin >> choice;
-        if (choice == 1){
-            company companyObj; 
-            string companyName = companyObj.companyName;
+    company companyObj;
+    string companyName = companyObj.companyName;
             cout << "Enter number of employees" << endl;
             cin >> empNumber;
             int employee[empNumber];
@@ -91,16 +91,33 @@ int main (){
                 while (monthCount < monthSize){
                     for ( int i = 0; i < empNumber ; i++){
                     sleep(1.8);
-                    totalEmpHrs = getTotalEmpHours(companyObj);
-                    empWage = totalEmpHrs * companyObj.EMP_RATE_PER_HOUR;
+                    empWage = companyObj.empWageBuilder(companyObj);
                     employee[i] = empWage;
                     cout << "employee ID :" << i + 1 <<", Employee Wage = " << empWage << ", Month: " << month[monthCount]<< endl;
                     }
                     writeToFile(fileName, employee, empNumber, monthCount, companyName);
                  monthCount++;
                     }
-            }
-        else
-            status = false;
-      }
+
 }
+int main (){
+    cout << "\n\tWelcome To Employee Wage Program." << endl;
+    bool status = true;
+    
+    while ( status){
+        int choice;
+        cout << "\n   Enter choice\n1.Add Company Details\n2.Exit" << endl;
+        cin >> choice;
+        switch (choice){
+            case 1:
+                companyDetailsBuilder();
+                break;
+            case 2:
+                status = false;
+                break;
+            default :
+                cout << "Invalid choice." << endl;
+                break;
+            }
+      }
+}  
