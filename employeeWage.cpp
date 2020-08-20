@@ -13,7 +13,7 @@ typedef struct Company {
     int MAX_MONTHLY_HRS ;
     int EMP_RATE_PER_HOUR;
     Company();
-    int empWageBuilder(company);
+    int empWageBuilder(Company);
 } company;
 
 Company :: Company(){
@@ -25,6 +25,28 @@ Company :: Company(){
     cin >> MAX_MONTHLY_HRS;
     cout << "Enter employee rate per hour : ";
     cin >> EMP_RATE_PER_HOUR;
+}
+int getTotalEmpHours(company companyObj){
+     const int FULL_TIME = 0, PART_TIME = 1;
+    int totalEmpHrs = 0, day = 0, empHrs;
+
+     srand(time(0));
+            while ( day <= companyObj.NUM_OF_WORKING_DAYS && totalEmpHrs <= companyObj.MAX_MONTHLY_HRS){  
+                day++;
+                int empCheck = rand() % 3;
+                switch(empCheck){
+                    case FULL_TIME:
+                            empHrs = 8;
+                            break;
+                    case PART_TIME:
+                            empHrs = 4;
+                            break;
+                    default:
+                            empHrs = 0;
+                }
+                totalEmpHrs += empHrs;
+            }
+            return totalEmpHrs;
 }
 
 int company :: empWageBuilder(company companyObj){
@@ -47,30 +69,6 @@ void writeToFile (string fileName, int *employee, int empNumber, int monthCount,
         }
         fileStream.close();
     }
-}
-
-int getTotalEmpHours(company companyObj){
-     const int FULL_TIME = 0, PART_TIME = 1;
-    //const int  NUM_OF_WORKING_DAYS = 20, MAX_MONTHLY_HRS = 100;
-    int totalEmpHrs = 0, day = 0, empHrs;
-
-     srand(time(0));
-            while ( day <= companyObj.NUM_OF_WORKING_DAYS && totalEmpHrs <= companyObj.MAX_MONTHLY_HRS){  
-                day++;
-                int empCheck = rand() % 3;
-                switch(empCheck){
-                    case FULL_TIME:
-                            empHrs = 8;
-                            break;
-                    case PART_TIME:
-                            empHrs = 4;
-                            break;
-                    default:
-                            empHrs = 0;
-                }
-                totalEmpHrs += empHrs;
-            }
-            return totalEmpHrs;
 }
 
 void companyDetailsBuilder(){
