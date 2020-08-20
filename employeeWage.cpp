@@ -7,6 +7,7 @@ using namespace std;
 
 string month[] = {"Jan", "Feb", "March", "April"};
 int monthSize = sizeof(month)/ sizeof(month[0]);
+list <int> dailyWagesList;
 
 typedef struct Company {
     string companyName;
@@ -36,7 +37,7 @@ int getTotalEmpHours(company companyObj){
     int totalEmpHrs = 0, day = 0, empHrs;
 
      srand(time(0));
-            while ( day <= companyObj.NUM_OF_WORKING_DAYS && totalEmpHrs <= companyObj.MAX_MONTHLY_HRS){  
+            while ( (day < companyObj.NUM_OF_WORKING_DAYS) && (totalEmpHrs <= companyObj.MAX_MONTHLY_HRS)){  
                 day++;
                 int empCheck = rand() % 3;
                 switch(empCheck){
@@ -49,6 +50,8 @@ int getTotalEmpHours(company companyObj){
                     default:
                             empHrs = 0;
                 }
+                int dailyWage = empHrs*companyObj.EMP_RATE_PER_HOUR;
+                dailyWagesList.push_back(dailyWage);
                 totalEmpHrs += empHrs;
             }
             return totalEmpHrs;
@@ -60,17 +63,24 @@ int company :: empWageBuilder(company companyObj){
 }
 
 void writeToFile (string fileName, int *employee, int empNumber, int monthCount, string companyName){
-    fstream fileStream;
+    list <int> :: iterator day;
+   fstream fileStream;
     fileStream.open(fileName, ios::out | ios::app);
     if(fileStream.is_open()){
         fileStream.seekp(0, ios::end);
          if (fileStream.tellg() == 0){
-            fileStream << "Company,employee ID,Month,Monthly Wage" << endl; 
+            fileStream << "Company,employee ID,Month,Monthly Wage";
+            for (int day = 1; day <= 30; day++ ){
+                fileStream << ",Day-" << day;
+            }
+          
          }  
-                 fileStream.seekp(0, ios::beg);
-
+        fileStream.seekp(0, ios::beg);
         for (int i = 0; i < empNumber ; i++){
-            fileStream << companyName << "," <<  i + 1 << "," <<month[monthCount] << ","<< employee[i] << endl;        
+            fileStream <<"\n" << companyName << "," <<  i + 1 << "," <<month[monthCount] << ","<< employee[i] ;  
+            for (day = dailyWagesList.begin(); day != dailyWagesList.end(); day++){
+                fileStream << "," << *day;
+            }
         }
         fileStream.close();
     }
@@ -78,6 +88,7 @@ void writeToFile (string fileName, int *employee, int empNumber, int monthCount,
 
 void companyDetailsBuilder(list<company> companyList){
     list <company> :: iterator companyObj;
+     list <int> :: iterator day;
     string fileName = "employeeWageDetails.csv";  
     int empHrs, empWage, totalEmpHrs, monthCount;
    
@@ -94,6 +105,7 @@ void companyDetailsBuilder(list<company> companyList){
             cout << "Company :" << companyName << ", employee ID :" << i + 1 <<", Employee Wage = " << empWage << ", Month: " << month[monthCount]<< endl;
         }
         writeToFile(fileName, employee, empNumber, monthCount, companyName);
+        dailyWagesList.clear();
         monthCount++;
     }
    }

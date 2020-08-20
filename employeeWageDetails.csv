@@ -1,27 +1,9 @@
-Company,employee ID,Month,Monthly Wage
-Nicks_Tech,1,Jan,5000
-Nicks_Tech,2,Jan,4200
-Nicks_Tech,1,Feb,3800
-Nicks_Tech,2,Feb,2400
-Nicks_Tech,1,March,2800
-Nicks_Tech,2,March,4400
-Nicks_Tech,1,April,3200
-Nicks_Tech,2,April,3600
-TCS,1,Jan,1000
-TCS,2,Jan,1040
-TCS,1,Feb,1080
-TCS,2,Feb,1040
-TCS,1,March,1040
-TCS,2,March,1040
-TCS,1,April,1040Accenture,1,Jan,120
-Accenture,1,Feb,120
-Accenture,1,March,160
-Accenture,1,April,160
-Amazon,1,Jan,240
-Amazon,2,Jan,240
-Amazon,1,Feb,240
-Amazon,2,Feb,240
-Amazon,1,March,240
-Amazon,2,March,240
-Amazon,1,April,240
-Amazon,2,April,240
+Company,employee ID,Month,Monthly Wage,Day-1,Day-2,Day-3,Day-4,Day-5,Day-6,Day-7,Day-8,Day-9,Day-10,Day-11,Day-12,Day-13,Day-14,Day-15,Day-16,Day-17,Day-18,Day-19,Day-20,Day-21,Day-22,Day-23,Day-24,Day-25,Day-26,Day-27,Day-28,Day-29,Day-30
+Amazon,1,Jan,2300,200,100,0,100,100,0,0,200,100,200,0,100,0,200,200,200,100,100,200,200
+Amazon,1,Feb,1900,200,100,0,200,0,0,100,100,100,0,100,200,0,0,100,0,200,200,100,200
+Amazon,1,March,2000,200,100,100,200,0,100,0,0,0,100,200,0,100,200,200,200,0,200,0,100
+Amazon,1,April,1800,200,100,0,100,100,100,100,0,100,200,0,100,100,200,0,0,100,200,0,100
+Wipro,1,Jan,1800,240,0,0,120,0,120,240,0,0,120,240,240,240,120,120
+Wipro,1,Feb,2040,240,120,120,0,0,120,120,240,240,240,0,0,240,120,240
+Wipro,1,March,1800,240,240,120,0,120,240,120,240,0,120,120,120,0,0,120
+Wipro,1,April,2520,240,120,120,240,0,240,0,120,240,240,240,240,120,120,240
