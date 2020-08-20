@@ -14,7 +14,6 @@ typedef struct Company {
     int EMP_RATE_PER_HOUR;
     Company();
     int empWageBuilder(company);
-    void companyDetailsBuilder();
 } company;
 
 Company :: Company(){
@@ -35,10 +34,6 @@ int company :: empWageBuilder(company companyObj){
 
 void writeToFile (string fileName, int *employee, int empNumber, int monthCount, string companyName){
     fstream fileStream;
-    // fileStream.open(fileName);
-    
-    // fileStream.close(); 
-
     fileStream.open(fileName, ios::out | ios::app);
     if(fileStream.is_open()){
         fileStream.seekp(0, ios::end);
@@ -97,7 +92,7 @@ void companyDetailsBuilder(){
                     }
                     writeToFile(fileName, employee, empNumber, monthCount, companyName);
                  monthCount++;
-                    }
+                 }
 
 }
 int main (){
