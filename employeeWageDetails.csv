@@ -14,8 +14,15 @@ TCS,2,Feb,1040
 TCS,1,March,1040
 TCS,2,March,1040
 TCS,1,April,1040
+<<<<<<< HEAD
 TCS,2,April,1080
 Infosys,1,Jan,1760
 Infosys,1,Feb,1600
 Infosys,1,March,1840
 Infosys,1,April,2080
+=======
+Accenture,1,Jan,44
+Accenture,1,Feb,44
+Accenture,1,March,88
+Accenture,1,April,44
+>>>>>>> UC11_Company_Struct
