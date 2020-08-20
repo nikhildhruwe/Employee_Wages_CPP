@@ -1,13 +1,21 @@
-Month, employee ID, Monthly Wage
-Jan,1,1680
-Jan,2,1680
-Jan,3,1680
-Feb,1,1680
-Feb,2,1680
-Feb,3,1680
-March,1,1680
-March,2,1680
-March,3,1680
-April,1,1680
-April,2,1680
-April,3,1680
+Company,employee ID,Month,Monthly Wage
+Nicks_Tech,1,Jan,1440
+Nicks_Tech,2,Jan,1680
+Nicks_Tech,3,Jan,1120
+Nicks_Tech,1,Feb,1600
+Nicks_Tech,2,Feb,1120
+Nicks_Tech,3,Feb,1520
+Nicks_Tech,1,March,1760
+Nicks_Tech,2,March,1520
+Nicks_Tech,3,March,2080
+Nicks_Tech,1,April,1120
+Nicks_Tech,2,April,1840
+Nicks_Tech,3,April,2000
+a,1,Jan,0
+a,2,Jan,8
+a,1,Feb,8
+a,2,Feb,8
+a,1,March,8
+a,2,March,4
+a,1,April,4
+a,2,April,4
