@@ -1,4 +1,13 @@
-employee ID, Monthly Wage
-1,2080
-2,2080
-3,2080
+Month, employee ID, Monthly Wage
+Jan,1,1680
+Jan,2,1680
+Jan,3,1680
+Feb,1,1680
+Feb,2,1680
+Feb,3,1680
+March,1,1680
+March,2,1680
+March,3,1680
+April,1,1680
+April,2,1680
+April,3,1680
