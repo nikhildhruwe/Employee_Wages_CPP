@@ -10,6 +10,7 @@ using namespace std;
 string month[] = {"Jan", "Feb", "March", "April"};
 int monthSize = sizeof(month)/ sizeof(month[0]);
 list <int> dailyWagesList;
+list <int> currentTotalWageList;
 
 typedef struct EmployeeDetails{
     string companyName;
@@ -18,6 +19,7 @@ typedef struct EmployeeDetails{
     int dayNo;
     int wagePerHour;
     int dailyWage;
+    int currentTotalWage;
 }employeeDetails;
 list <employeeDetails> employeeDetailsList;
 
@@ -27,13 +29,12 @@ typedef struct employeeSort{
     string companyName;
     string month;
     employeeSort(int monthlyWage, int empID, string companyName, string month){
-        monthlyWage = monthlyWage;
-        employeeID = empID;
-        companyName = companyName;
-        month = month;
+        this -> monthlyWage = monthlyWage;
+        this -> employeeID = empID;
+        this -> companyName = companyName;
+        this -> month = month;
     }
 }employeeSort;
-vector <employeeSort> employeeSortList;
 
 typedef struct Company {
     string companyName;
@@ -82,6 +83,7 @@ int getTotalEmpHours(company companyObj){
                 // cout << dailyWage;
                 dailyWagesList.push_back(dailyWage);
                 totalEmpHrs += empHrs;
+                currentTotalWageList.push_back(totalEmpHrs*companyObj.EMP_RATE_PER_HOUR);
             }
         return totalEmpHrs;
 }
@@ -91,29 +93,30 @@ int company :: empWageBuilder(company companyObj){
     return totalEmpHrs * companyObj.EMP_RATE_PER_HOUR;
 }
 
-void writeToFile (string fileName, int monthCount, _List_iterator<company> companyObj){
+void writeToFile (string fileName, int monthCount, _List_iterator<company> companyObj, int employeeID){
     int totalDays = (*companyObj).NUM_OF_WORKING_DAYS;
     string companyName = (*companyObj).companyName;
     int employeeNumber = (*companyObj).empNumber;
     int wagePerHour = (*companyObj).EMP_RATE_PER_HOUR;
     int dayCount;
-    list <int> :: iterator dailyWage;
+    list <int> :: iterator dailyWage = dailyWagesList.begin();
+    list <int> :: iterator currentTotalWage = currentTotalWageList.begin();
 
     fstream fileStream;
     fileStream.open(fileName, ios::out | ios::app);
     if(fileStream.is_open()){
         fileStream.seekp(0, ios::end);
         if (fileStream.tellg() == 0){
-            fileStream << "Company, Employee-ID, Month, Day No., Daily Wage, Wage Per-Hour";
+            fileStream << "Company, Employee-ID, Month, Day No., Daily Wage, Wage Per-Hour,totalWage-current ";
         }
 
         fileStream.seekp(0, ios::beg);
-        for (int i = 0; i < employeeNumber; i++)
-            for (dayCount = 0, dailyWage = dailyWagesList.begin(); dailyWage != dailyWagesList.end() ; dayCount++, dailyWage++ ){
-                fileStream << "\n" << companyName << "," <<  i + 1 << "," << month[monthCount] << "," << dayCount + 1
-                << "," <<  *dailyWage << "," << wagePerHour;
+        // for (int j = 0; j < employeeNumber; j++)
+            for (dayCount = 0 ; dailyWage != dailyWagesList.end() ; dayCount++, dailyWage++, currentTotalWage++ ){
+                fileStream << "\n" << companyName << "," <<  employeeID << "," << month[monthCount] << "," << dayCount + 1
+                << "," <<  *dailyWage << "," << wagePerHour << "," << *currentTotalWage;
                
-            }
+            }   
         fileStream.close();
     }
 }
@@ -152,6 +155,7 @@ void readFromFile (string fileName){
                 employeeDetails.dayNo = stoi(details[3]);
                 employeeDetails.dailyWage = stoi(details[4]);
                 employeeDetails.wagePerHour = stoi(details[5]);
+                employeeDetails.currentTotalWage = stoi(details[6]);
                 employeeDetailsList.push_back(employeeDetails);
             }
         }
@@ -184,29 +188,24 @@ void empTotalWage(list<company> companyList){
          cout << "No Such Company Found" << endl;
          return ;
      }
-    //  cout << company << totalEmployees << totalDays << endl;
 
     empObj = employeeDetailsList.begin();
      for (empCount = 0; empCount < totalEmployees; empCount++){ 
         cout << "\nEmployeeID-" << empCount + 1 << ": " << endl;
             for (int monthCount = 0; monthCount < monthSize; monthCount++){
                 cout << "Month : " << month[monthCount] << ",";
-                empObj = employeeDetailsList.begin();
                 totalEmpWage = 0;
-                while (empObj != employeeDetailsList.end()){
-                    if((*empObj).companyName == company && ((*empObj).employeeID == (empCount + 1)) && ((*empObj).month == month[monthCount])){
-                             totalEmpWage = totalEmpWage + (*empObj).dailyWage;
-                             empObj++;
-                        }
-                        else{
-                             empObj++;
-                        }   
+                while( !((*empObj).companyName == company && ((*empObj).employeeID == (empCount + 1)) && (*empObj).month == month[monthCount])){
+                    empObj++;   
                 }
-                // employeeSort empSortObj(totalEmpWage, empCount + 1, company, month[monthCount] );
-                // employeeSortList.push_back(empSortObj);
+                while ((*empObj).month == month[monthCount] && empObj != employeeDetailsList.end()) {
+                    totalEmpWage = empObj ->currentTotalWage;
+                    empObj++;
+                }  
                 cout << " Salary: " << totalEmpWage << endl;
             }   
      }
+
 }
 
 
@@ -214,29 +213,32 @@ void companyDetailsBuilder(list<company> companyList){
     list <company> :: iterator companyObj;
     list <int> :: iterator day;
     string fileName = "employeeWageDetails.csv";
-    int empHrs, empWage, totalEmpHrs, monthCount;
+    int empHrs, empWage, totalEmpHrs, monthCount, empNumber;
 
    for ( companyObj = companyList.begin(); companyObj!=companyList.end(); companyObj++){
-        int empNumber = (*companyObj).empNumber;
-        string companyName = (*companyObj).companyName;
-        monthCount = 0;
+        empNumber = (*companyObj).empNumber;
+        string companyName = (*companyObj).companyName; 
         cout << endl ;
-        while (monthCount < monthSize){
-            for ( int i = 0; i < empNumber ; i++){
-                sleep(1.5);
-                empWage = (*companyObj).empWageBuilder((*companyObj));
-                cout << "Company :" << companyName << ", employee ID :" << i + 1 <<", Employee Wage = " << empWage << ", Month: " << month[monthCount]<< endl;
+        int i = 0;
+            for ( int empCount = 0; empCount < empNumber ; empCount++){
+                monthCount = 0;
+                while (monthCount < monthSize){
+                    sleep(1.5);
+                    empWage = (*companyObj).empWageBuilder((*companyObj));
+                    cout << "Company :" << companyName << ", employee ID :" << (empCount + 1) <<", Employee Wage = " << empWage << ", Month: " << month[monthCount]<< endl;
+                    writeToFile(fileName, monthCount, companyObj, empCount + 1);
+                    dailyWagesList.clear();
+                    currentTotalWageList.clear();
+                    monthCount++;
+                 }
             }
-            writeToFile(fileName, monthCount, companyObj);
-            dailyWagesList.clear();
-            monthCount++;
-        }
     }
 }
 
-void sortByMontlyWage(list<company> companyList){
+vector <employeeSort> getMonthlyWageList(list<company> companyList){
     list <company> :: iterator companyObj;
     list <employeeDetails> :: iterator empObj;
+    vector <employeeSort> employeeMonthlyList;
     int totalEmpWage = 0;
     string company;
     int totalEmployees;
@@ -245,38 +247,50 @@ void sortByMontlyWage(list<company> companyList){
     int empCount;
     int flag = 0;
 
+    // empObj = employeeDetailsList.begin();
 
-     for ( companyObj = companyList.begin(); companyObj!=companyList.end(); companyObj++){
+    for ( companyObj = companyList.begin(); companyObj!=companyList.end(); companyObj++){
         totalEmployees = (*companyObj).empNumber;
         totalDays = (*companyObj).NUM_OF_WORKING_DAYS;
-        company = companyObj ->companyName;
-        cout << "\nCompany :" << companyObj->companyName << endl;
-         empObj = employeeDetailsList.begin();
-         for (empCount = 0; empCount < totalEmployees; empCount++){ 
-          cout << "EmployeeID-" << empCount + 1 << ": " << endl;
-             for (int monthCount = 0; monthCount < monthSize; monthCount++){
-                  cout << "Month : " << month[monthCount] << ",";
-                  empObj = employeeDetailsList.begin();
-                  totalEmpWage = 0;
-                  while (empObj != employeeDetailsList.end()){     
-                    //      cout << company << totalEmployees << totalDays << endl;   
-                    //   cout << empObj ->dailyWage << (*empObj).companyName << (*empObj).employeeID << (*empObj).month << endl;
-                    if(((*empObj).companyName == company) && ((*empObj).employeeID == (empCount + 1)) && ((*empObj).month == month[monthCount])){
-                             totalEmpWage = totalEmpWage + (*empObj).dailyWage;
-                             empObj++;
+        company =  (*companyObj).companyName;
+        empObj = employeeDetailsList.begin();
+        for (empCount = 0; empCount < totalEmployees; empCount++){ 
+            for (int monthCount = 0; monthCount < monthSize; monthCount++){
+                totalEmpWage = 0;
+                 while( !((*empObj).companyName == company && ((*empObj).employeeID == (empCount + 1)) && (*empObj).month == month[monthCount])){
+                        empObj++;   
                         }
-                        else{
-                             empObj++;
-                        }   
-                }
-                // employeeSort empSortObj(totalEmpWage, empCount + 1, company, month[monthCount] );
-                // employeeSortList.push_back(empSortObj);
-                cout << " Salary: " << totalEmpWage << endl;
+                while ((*empObj).month == month[monthCount] && empObj != employeeDetailsList.end()) {
+                    totalEmpWage = empObj ->currentTotalWage;
+                    empObj++;
+                }  
+                employeeSort empSortObj(totalEmpWage, empCount + 1, company, month[monthCount] );
+                employeeMonthlyList.push_back(empSortObj);
+                // cout << " Salary: " << totalEmpWage << endl;
             }   
      }
-     }
-
+    }
+    return employeeMonthlyList;
 }
+
+void display(vector <employeeSort> employeeMonthlyList){
+     for (int i = 0; i < employeeMonthlyList.size() ; i++){
+      cout << "Company" << employeeMonthlyList[i].companyName << ", EmployeeID: " << employeeMonthlyList[i].employeeID <<
+      ", Monthly Wage: " << employeeMonthlyList[i].monthlyWage << endl;
+    }
+}
+
+void sortByMonthlyWage(vector <employeeSort> employeeMonthlyList){
+    for (int i = 0; i < employeeMonthlyList.size() ; i++){
+        for (int j = 0; j < employeeMonthlyList.size() - i; j++){
+            if (employeeMonthlyList[j].monthlyWage < employeeMonthlyList[j+1].monthlyWage){
+                    swap (employeeMonthlyList[j], employeeMonthlyList[j+1]);
+            }
+        }
+    }
+    display(employeeMonthlyList);
+}
+
 
 int main (){
     cout << "\n\tWelcome To Employee Wage Program." << endl;
@@ -298,5 +312,7 @@ int main (){
         companyDetailsBuilder(companyList);
         readFromFile("employeeWageDetails.csv");
         // empTotalWage(companyList);
-        sortByMontlyWage(companyList);
+        vector <employeeSort> employeeMonthlyList = getMonthlyWageList(companyList);
+        cout << "11" << endl;
+        sortByMonthlyWage(employeeMonthlyList);
 }
