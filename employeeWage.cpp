@@ -98,7 +98,6 @@ void writeToFile (string fileName, int monthCount, _List_iterator<company> compa
             for (dayCount = 0, dailyWage = dailyWagesList.begin(); dailyWage != dailyWagesList.end() ; dayCount++, dailyWage++ ){
                 fileStream << "\n" << companyName << "," <<  i + 1 << "," << month[monthCount] << "," << dayCount + 1
                 << "," <<  *dailyWage << "," << wagePerHour;
-               
             }
         fileStream.close();
     }
@@ -117,7 +116,7 @@ vector<string> split(const string& line, char delimiter)
 
 void readFromFile (string fileName){
     fstream fileStream;
-  
+
     fileStream.open(fileName, ios::in);
     if (fileStream.is_open()){
         vector <string> details;
@@ -173,7 +172,7 @@ void empTotalWage(list<company> companyList){
      cout << company << totalEmployees << totalDays << endl;
 
     empObj = employeeDetailsList.begin();
-     for (empCount = 0; empCount < totalEmployees; empCount++){ 
+     for (empCount = 0; empCount < totalEmployees; empCount++){
         cout << "\nEmployeeID-" << empCount + 1 << ": " << endl;
           cout << endl;
             for (int monthCount = 0; monthCount < monthSize; monthCount++){
@@ -188,10 +187,10 @@ void empTotalWage(list<company> companyList){
                         else
                         {
                              empObj++;
-                        }   
+                        }
                 }
                 cout << " Salary: " << totalEmpWage << endl;
-            }   
+            }
      }
 }
 
