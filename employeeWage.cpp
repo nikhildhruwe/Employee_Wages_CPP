@@ -212,7 +212,7 @@ vector <employeeSort> getMonthlyWageList(list<company> companyList){
     int totalEmployees;
     int totalDays;
     int day;
-    int empCount;
+    int empCount;  
     int flag = 0;
 
     for ( companyObj = companyList.begin(); companyObj!=companyList.end(); companyObj++){
