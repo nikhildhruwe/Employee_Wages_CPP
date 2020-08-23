@@ -28,11 +28,15 @@ typedef struct employeeSort{
     int employeeID;
     string companyName;
     string month;
-    employeeSort(int monthlyWage, int empID, string companyName, string month){
+    int dailyWage;
+    int dayNo;
+    employeeSort(int monthlyWage, int empID, string companyName, string month, int dailyWage, int dayNo){
         this -> monthlyWage = monthlyWage;
         this -> employeeID = empID;
         this -> companyName = companyName;
         this -> month = month;
+        this ->dailyWage = dailyWage;
+        this ->dayNo = dayNo;
     }
 }employeeSort;
 
@@ -188,6 +192,16 @@ void companyDetailsBuilder(list<company> companyList){
             }
     }
 }
+vector <employeeSort> getDailyWageList(list<company> companyList){
+    list <employeeDetails> :: iterator empObj;
+    vector <employeeSort> employeeDailyList;
+
+    for ( empObj = employeeDetailsList.begin(); empObj != employeeDetailsList.end(); empObj++){
+        employeeSort employeeSort( empObj -> currentTotalWage, empObj ->employeeID, empObj->companyName, empObj->month,empObj->dailyWage, empObj ->dayNo);
+        employeeDailyList.push_back(employeeSort); 
+    }    
+    return employeeDailyList;
+}
 
 vector <employeeSort> getMonthlyWageList(list<company> companyList){
     list <company> :: iterator companyObj;
@@ -215,31 +229,42 @@ vector <employeeSort> getMonthlyWageList(list<company> companyList){
                 while ((*empObj).month == month[monthCount] && empObj != employeeDetailsList.end()) {
                     totalEmpWage = empObj ->currentTotalWage;
                     empObj++;
-                }  
-                employeeSort empSortObj(totalEmpWage, empCount + 1, company, month[monthCount] );
+                }
+                employeeSort empSortObj(totalEmpWage, empCount + 1, company, month[monthCount], empObj->dailyWage, empObj ->dayNo );
                 employeeMonthlyList.push_back(empSortObj);
             }   
-     }
+        }
     }
     return employeeMonthlyList;
 }
 
-void display(vector <employeeSort> employeeMonthlyList){
-     for (int i = 0; i < employeeMonthlyList.size() ; i++){
-      cout << "Company" << employeeMonthlyList[i].companyName << ", EmployeeID: " << employeeMonthlyList[i].employeeID <<
-      ", Monthly Wage: " << employeeMonthlyList[i].monthlyWage << endl;
+void display(vector <employeeSort> employeeWageList){
+     for (int i = 0; i < employeeWageList.size() ; i++){
+      cout << "Company" << employeeWageList[i].companyName << ", EmployeeID: " << employeeWageList[i].employeeID <<
+      ", Monthly Wage: " << employeeWageList[i].monthlyWage << ", Daily Wages"<< employeeWageList[i].dailyWage << endl;
     }
 }
 
-void sortByMonthlyWage(vector <employeeSort> employeeMonthlyList){
-    for (int i = 0; i < employeeMonthlyList.size() ; i++){
-        for (int j = 0; j < employeeMonthlyList.size() - i; j++){
-            if (employeeMonthlyList[j].monthlyWage < employeeMonthlyList[j+1].monthlyWage){
-                    swap (employeeMonthlyList[j], employeeMonthlyList[j+1]);
+void sortByMonthlyWage(vector <employeeSort> employeeWageList){
+    for (int i = 0; i < employeeWageList.size() ; i++){
+        for (int j = 0; j < employeeWageList.size() - i; j++){
+            if (employeeWageList[j].monthlyWage < employeeWageList[j+1].monthlyWage){
+                    swap (employeeWageList[j], employeeWageList[j+1]);
             }
         }
     }
-    display(employeeMonthlyList);
+    display(employeeWageList);
+}
+
+void sortByDailylyWage(vector <employeeSort> employeeWageList){
+for (int i = 0; i < employeeWageList.size() ; i++){
+        for (int j = 0; j < employeeWageList.size() - i; j++){
+            if (employeeWageList[j].dailyWage < employeeWageList[j+1].dailyWage){
+                    swap (employeeWageList[j], employeeWageList[j+1]);
+            }
+        }
+    }
+    display(employeeWageList);
 }
 
 list <company> insertCompanyDetails(){
@@ -253,10 +278,10 @@ void displayOptions(){
      bool status = true;
     string fileName = "employeeWageDetails.csv";
     list <company> companyList;
-    vector <employeeSort> employeeMonthlyList;
+    vector <employeeSort> employeeWageList;
   
      while (status){
-      cout << "\n  Choose Operation.\n1.Insert Company Details\n2.Display Details.\n3Sort By Monthly Wage.\n4.Exit\n" << endl;
+      cout << "\n  Choose Operation.\n1.Insert Company Details\n2.Display Details.\n3.Sort By Monthly Wage.\n4.Sort By Daily Wages\n5.Exit" << endl;
       int choice;
       cin >> choice;
       switch (choice){
@@ -265,16 +290,22 @@ void displayOptions(){
                 break;
             case 2:
                 readFromFile(fileName);
-                employeeMonthlyList = getMonthlyWageList(companyList);
-                display(employeeMonthlyList);
+                employeeWageList = getMonthlyWageList(companyList);
+                display(employeeWageList);
                 break;
             case 3:
-                employeeMonthlyList.clear();
+                employeeWageList.clear();
                 readFromFile(fileName);
-                employeeMonthlyList = getMonthlyWageList(companyList);
-                sortByMonthlyWage(employeeMonthlyList);
+                employeeWageList = getMonthlyWageList(companyList);
+                sortByMonthlyWage(employeeWageList);
                 break;
-            case 4 :
+            case 4:
+                employeeWageList.clear();
+                readFromFile(fileName);
+                employeeWageList = getDailyWageList(companyList);
+                sortByDailylyWage(employeeWageList);
+                break;
+            case 5 :
                 status = false;
                 break;
             default:
