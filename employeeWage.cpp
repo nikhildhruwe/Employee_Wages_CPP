@@ -168,31 +168,28 @@ list <employeeDetails> readFromFile (string fileName){
     return employeeDetailsList;
 }
 
-void companyDetailsBuilder(list<company> companyList){
-    list <company> :: iterator companyObj;
-    list <int> :: iterator day;
+void companyDetailsBuilder(company companyObj){
     string fileName = "employeeWageDetails.csv";
     int empHrs, empWage, totalEmpHrs, monthCount, empNumber;
 
-   for ( companyObj = companyList.begin(); companyObj!=companyList.end(); companyObj++){
-        empNumber = (*companyObj).empNumber;
-        string companyName = (*companyObj).companyName; 
-        cout << endl ;
-        int i = 0;
-            for ( int empCount = 0; empCount < empNumber ; empCount++){
-                monthCount = 0;
-                while (monthCount < monthSize){
-                    sleep(1.5);
-                    empWage = (*companyObj).empWageBuilder((*companyObj));
-                    cout << "Company :" << companyName << ", employee ID :" << (empCount + 1) <<", Employee Wage = " << empWage << ", Month: " << month[monthCount]<< endl;
-                    writeToFile(fileName, monthCount, *companyObj, empCount + 1);
-                    dailyWagesList.clear();
-                    currentTotalWageList.clear();
-                    monthCount++;
-                 }
+    empNumber = companyObj.empNumber;
+    string companyName = companyObj.companyName; 
+    cout << endl ;
+    int i = 0;
+    for ( int empCount = 0; empCount < empNumber ; empCount++){
+        monthCount = 0;
+        while (monthCount < monthSize){
+            sleep(1.5);
+            empWage = companyObj.empWageBuilder(companyObj);
+            cout << "Company :" << companyName << ", employee ID :" << (empCount + 1) <<", Employee Wage = " << empWage << ", Month: " << month[monthCount]<< endl;
+            writeToFile(fileName, monthCount, companyObj, empCount + 1);
+            dailyWagesList.clear();
+            currentTotalWageList.clear();
+            monthCount++;
             }
-    }
+        }
 }
+
 vector <employeeSort> getDailyWageList(list<company> companyList){
     list <employeeDetails> employeeDetailsList = readFromFile("employeeWageDetails.csv");
     list <employeeDetails> :: iterator empObj;
@@ -297,7 +294,7 @@ for (int i = 0; i < employeeWageList.size() ; i++){
 list <company> insertCompanyDetails( list <company> companyList ){
     company companyObj;
     companyList.push_back(companyObj);
-    companyDetailsBuilder(companyList);
+    companyDetailsBuilder(companyObj);
     return companyList;
 }
 void displayOptions(){
