@@ -12,6 +12,7 @@ int monthSize = sizeof(month)/ sizeof(month[0]);
 list <int> dailyWagesList;
 list <int> currentTotalWageList;
 
+
 typedef struct EmployeeDetails{
     string companyName;
     int employeeID;
@@ -45,7 +46,6 @@ typedef struct Company {
     int MAX_MONTHLY_HRS ;
     int EMP_RATE_PER_HOUR;
     int empNumber;
-    vector <int> monthlyWage;
     Company();
     int empWageBuilder(Company);
 } company;
@@ -83,7 +83,6 @@ int getTotalEmpHours(company companyObj){
                             empHrs = 0;
                 }
                 int dailyWage = empHrs*companyObj.EMP_RATE_PER_HOUR;
-                // cout << dailyWage;
                 dailyWagesList.push_back(dailyWage);
                 totalEmpHrs += empHrs;
                 currentTotalWageList.push_back(totalEmpHrs*companyObj.EMP_RATE_PER_HOUR);
@@ -114,18 +113,15 @@ void writeToFile (string fileName, int monthCount, company companyObj, int emplo
         }
 
         fileStream.seekp(0, ios::beg);
-        // for (int j = 0; j < employeeNumber; j++)
-            for (dayCount = 0 ; dailyWage != dailyWagesList.end() ; dayCount++, dailyWage++, currentTotalWage++ ){
-                fileStream << "\n" << companyName << "," <<  employeeID << "," << month[monthCount] << "," << dayCount + 1
-                << "," <<  *dailyWage << "," << wagePerHour << "," << *currentTotalWage;
-               
-            }   
+        for (dayCount = 0 ; dailyWage != dailyWagesList.end() ; dayCount++, dailyWage++, currentTotalWage++ ){
+            fileStream << "\n" << companyName << "," <<  employeeID << "," << month[monthCount] << "," << dayCount + 1
+            << "," <<  *dailyWage << "," << wagePerHour << "," << *currentTotalWage;       
+            }
         fileStream.close();
     }
 }
 
-vector<string> split(const string& line, char delimiter)
-{
+vector<string> split(const string& line, char delimiter){
     vector<string> tokens;
     string token;
     istringstream tokenStream(line);
@@ -212,7 +208,7 @@ vector <employeeSort> getMonthlyWageList(list<company> companyList){
     int totalEmployees;
     int totalDays;
     int day;
-    int empCount;
+    int empCount;  
     int flag = 0;
 
     for ( companyObj = companyList.begin(); companyObj!=companyList.end(); companyObj++){
@@ -240,8 +236,9 @@ vector <employeeSort> getMonthlyWageList(list<company> companyList){
 
 void display(vector <employeeSort> employeeWageList){
      for (int i = 0; i < employeeWageList.size() ; i++){
-      cout << "Company: " << employeeWageList[i].companyName << ", EmployeeID: " << employeeWageList[i].employeeID <<
-      ", Monthly Wage: " << employeeWageList[i].monthlyWage << ", Daily Wages: "<< employeeWageList[i].dailyWage << endl;
+      cout << "Company: " << employeeWageList[i].companyName << ", EmployeeID: " << employeeWageList[i].employeeID << ", Month :" 
+      << employeeWageList[i].month << ", Monthly Wage: " << employeeWageList[i].monthlyWage 
+      << ", Daily Wages: "<< employeeWageList[i].dailyWage << endl;
     }
 }
 
@@ -265,13 +262,12 @@ void display(vector <employeeSort> employeeWageList){
         cout << "No Employee with with wage per hour : " << empWagePerHour << endl;
         return; 
     }  
-
     display(employeeDailyList);
 }
 
 void sortByMonthlyWage(vector <employeeSort> employeeWageList){
-    for (int i = 0; i < employeeWageList.size() ; i++){
-        for (int j = 0; j < employeeWageList.size() - i; j++){
+    for (int i = 0; i < employeeWageList.size() - 1 ; i++){
+        for (int j = 0; j < employeeWageList.size() - i - 1 ; j++){
             if (employeeWageList[j].monthlyWage < employeeWageList[j+1].monthlyWage){
                     swap (employeeWageList[j], employeeWageList[j+1]);
             }
@@ -297,8 +293,9 @@ list <company> insertCompanyDetails( list <company> companyList ){
     companyDetailsBuilder(companyObj);
     return companyList;
 }
+
 void displayOptions(){
-     bool status = true;
+    bool status = true;
     string fileName = "employeeWageDetails.csv";
     list <company> companyList;
     vector <employeeSort> employeeWageList;
